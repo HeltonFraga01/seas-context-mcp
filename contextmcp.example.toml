@@ -1,0 +1,45 @@
+project_id = "example-project"
+project_name = "Example Project"
+project_root = "."
+provider = "generic"
+
+[include]
+globs = ["**/*.{ts,tsx,js,jsx,md,json,yml,yaml,toml}"]
+
+[exclude]
+globs = ["**/node_modules/**", "**/dist/**", "**/.git/**", "**/coverage/**", "archived/**", "docs/archive/**"]
+
+[indexing]
+max_file_bytes = 524288
+
+[embeddings]
+provider = "openai"
+model = "text-embedding-3-small"
+enabled = true
+
+[risk_gate]
+auto_allow_low = true
+auto_allow_medium = false
+allow_high = false
+
+[[sources]]
+type = "local"
+name = "repo"
+path = "."
+
+[[sources]]
+type = "github"
+name = "origin"
+owner = "example"
+repo = "repo"
+read_enabled = true
+write_enabled = true
+
+[[sources]]
+type = "web"
+name = "docs"
+url = "https://example.com/docs"
+read_enabled = true
+
+[web_allowlist]
+domains = ["example.com", "docs.example.com", "github.com", "raw.githubusercontent.com"]

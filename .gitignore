@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.seas-context/
+coverage/
+.env
+.DS_Store

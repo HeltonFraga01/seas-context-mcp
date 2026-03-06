@@ -1,0 +1,112 @@
+# SEAS Context MCP
+
+SEAS Context MCP is a reusable project-context stack for local repositories and remote knowledge sources. It combines a local indexer, a stdio MCP server, a CLI, a local web console, and project-specific providers such as Córtexx.
+
+## V1 Scope
+
+- Local repository, docs, plans, skills, AGENTS and manifests
+- GitHub repository read + issues/docs write under risk gate
+- Web ingest under allowlist
+- Query responses with `answer`, `evidence`, `confidence`, `freshness` and `sources`
+- Official `cortexx` provider
+
+## Workspace
+
+- `packages/core-indexer` - indexing, storage, retrieval, governance
+- `packages/mcp-server` - MCP stdio server
+- `packages/cli` - project operations
+- `packages/web` - local HTTP UI
+- `packages/providers/cortexx` - Córtexx provider
+
+## Quick Start
+
+```bash
+npm install
+cp contextmcp.example.toml contextmcp.toml
+npm run build
+node packages/cli/dist/index.js ingest --config contextmcp.toml
+node packages/mcp-server/dist/index.js
+```
+
+## CLI
+
+```bash
+context init --project-root /path/to/project --provider generic
+context ingest --config contextmcp.toml
+context watch --config contextmcp.toml
+context query "onde está a arquitetura?"
+context evidence "quais são os gaps?"
+context map --config contextmcp.toml
+context health --config contextmcp.toml
+context source-add --type github --name origin --owner org --repo repo
+context source-sync --config contextmcp.toml
+context doctor --config contextmcp.toml
+```
+
+## MCP Tools
+
+- `project_register`
+- `source_add`
+- `source_sync`
+- `source_status`
+- `index_refresh`
+- `context_query`
+- `evidence_query`
+- `context_map`
+- `context_health`
+- `doc_publish`
+- `github_issue_upsert`
+- `provider_status`
+- `provider_query`
+- `provider_action`
+
+## Web UI
+
+```bash
+npm run dev:web
+# http://127.0.0.1:4317
+```
+
+The local console exposes:
+- health and freshness
+- source map
+- provider status
+- ad-hoc query
+- one-click reindex
+
+## Córtexx Provider
+
+Provider `cortexx` adds:
+- path-aware retrieval for architecture, specs, runbooks and roadmap
+- default source expansion for `.context`, `.kiro` and repo-local artefacts
+- domain entities: `roadmap_item`, `spec`, `skill`, `plan`, `runbook`, `agent`, `vertical`, `tenant_context`
+
+Example profiles:
+- [`examples/cortexx/contextmcp.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.toml): broad project ingest
+- [`examples/cortexx/contextmcp.lean.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.lean.toml): operational profile for architecture, roadmap and runtime surfaces
+
+## Risk Gate
+
+Remote writes are intentionally narrow in V1:
+- GitHub issues
+- docs artefacts
+
+Risk levels:
+- `low`: auto-allow if policy permits
+- `medium`: dry-run plus explicit approval
+- `high`: blocked unless explicitly approved by policy
+
+Every write records:
+- actor
+- provider
+- reason
+- target
+- payload summary
+- timestamp
+
+## Notes
+
+- Local state lives in `.seas-context/`
+- Default embeddings provider is OpenAI via `OPENAI_API_KEY`
+- If embeddings are unavailable, retrieval falls back to exact/heuristic ranking
+- SQLite uses `FTS5` plus optional vector scoring

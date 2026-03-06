@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SEAS Context MCP</title>
+    <style>
+      :root { --bg:#0a1020; --panel:#111a2e; --line:#233354; --text:#eef4ff; --muted:#8ea3c7; --accent:#47d1ff; }
+      body { margin:0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: radial-gradient(circle at top, #142346 0%, var(--bg) 55%); color:var(--text); }
+      main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 56px; }
+      .grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+      .card { background: rgba(17,26,46,.88); border:1px solid var(--line); border-radius:16px; padding:16px; backdrop-filter: blur(10px); }
+      input, button { border-radius: 10px; border:1px solid var(--line); background:#0f1730; color:var(--text); padding:10px 12px; }
+      button { cursor:pointer; background: linear-gradient(135deg, #0f1730 0%, #17315d 100%); }
+      pre { white-space: pre-wrap; word-break: break-word; color: #d7e7ff; }
+      .row { display:flex; gap:12px; flex-wrap:wrap; }
+      .muted { color: var(--muted); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>SEAS Context MCP</h1>
+      <p class="muted">Health, freshness, evidence and query inspector for the local project context.</p>
+      <div class="grid">
+        <section class="card"><h2>Health</h2><pre id="health">loading...</pre></section>
+        <section class="card"><h2>Map</h2><pre id="map">loading...</pre></section>
+      </div>
+      <section class="card" style="margin-top:16px;">
+        <h2>Query</h2>
+        <div class="row">
+          <input id="query" style="flex:1; min-width:280px;" value="onde está a arquitetura do projeto?" />
+          <button id="run">Consultar</button>
+          <button id="ingest">Reindexar</button>
+        </div>
+        <pre id="result" style="margin-top:12px;">ready</pre>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

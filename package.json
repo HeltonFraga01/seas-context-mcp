@@ -1,0 +1,27 @@
+{
+  "name": "seas-context-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "workspaces": [
+    "packages/core-indexer",
+    "packages/mcp-server",
+    "packages/cli",
+    "packages/web",
+    "packages/providers/cortexx"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "vitest run",
+    "dev:web": "node packages/web/dist/server.js",
+    "dev:mcp": "node packages/mcp-server/dist/index.js",
+    "doctor": "node packages/cli/dist/index.js doctor"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.7"
+  }
+}

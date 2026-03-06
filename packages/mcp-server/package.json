@@ -1,0 +1,17 @@
+{
+  "name": "@seas-context/mcp-server",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "seas-context-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@seas-context/core-indexer": "0.1.0",
+    "@seas-context/provider-cortexx": "0.1.0"
+  }
+}

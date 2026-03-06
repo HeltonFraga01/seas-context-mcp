@@ -1,0 +1,59 @@
+project_id = "cortexx"
+project_name = "Córtexx"
+project_root = "/Users/heltonfraga/Documents/Develop/Cortexx"
+provider = "cortexx"
+
+[include]
+globs = [
+  "AGENTS.md",
+  ".context/docs/**/*.md",
+  ".context/plans/**/*.md",
+  ".kiro/specs/**/*.md",
+  ".kiro/skills/**/*.md",
+  "server/routes/**/*.js",
+  "server/services/superadmin/**/*.js",
+  "server/services/cortex3/**/*.js",
+  "server/services/SuperadminChatService.js",
+  "server/services/RickBMcp*.js",
+  "server/services/RickBToolArgumentGuardService.js",
+  "server/services/InboxAgentService.js",
+  "server/services/OnboardingAutoTenantService.js",
+  "server/services/GenesisKernelService.js",
+  "server/gateway/integration/**/*.js",
+  "server/webhooks/chatMessageHandler.js",
+  "server/a2a/**/*.js",
+  "services/temporal/**/*.{js,ts,md}",
+  "package.json"
+]
+
+[exclude]
+globs = [
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/.git/**",
+  "**/coverage/**",
+  "archived/**",
+  "docs/archive/**"
+]
+
+[indexing]
+max_file_bytes = 524288
+
+[embeddings]
+provider = "openai"
+model = "text-embedding-3-small"
+enabled = false
+
+[risk_gate]
+auto_allow_low = true
+auto_allow_medium = false
+allow_high = false
+
+[[sources]]
+type = "local"
+name = "repo"
+path = "/Users/heltonfraga/Documents/Develop/Cortexx"
+read_enabled = true
+
+[web_allowlist]
+domains = ["github.com", "raw.githubusercontent.com", "openai.com", "platform.openai.com"]
