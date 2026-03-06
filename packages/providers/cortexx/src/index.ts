@@ -59,13 +59,15 @@ export function enrichCortexxQuery(query: string): string {
   if (/\bmem[oó]ria\b|\bmemory\b/.test(normalized)) focusTerms.add('memory');
   if (/\ba2a\b/.test(normalized)) focusTerms.add('a2a');
   if (/\bmcp\b/.test(normalized)) focusTerms.add('mcp');
+  if (/\btenant factory\b|\btenant bootstrap\b|\bbootstrap de tenant\b|\btenant creation\b/.test(normalized)) focusTerms.add('tenant_factory');
 
   const hints = {
     provider: 'cortexx',
     entities: [...entities],
     timeline,
-    focus_terms: [...focusTerms]
+    focus_terms: [...focusTerms],
+    preferred_sources: ['AGENTS.md', '.context/docs', '.kiro/specs', '.kiro/skills', 'roadmap', 'runbooks', 'architecture']
   };
 
-  return `${query}\n\nPrioritize AGENTS.md, .context/docs, .kiro/specs, .kiro/skills, roadmap, runbooks and architecture evidence.\n[SEAS_CONTEXT_HINTS]${JSON.stringify(hints)}[/SEAS_CONTEXT_HINTS]`;
+  return `${query}\n[SEAS_CONTEXT_HINTS]${JSON.stringify(hints)}[/SEAS_CONTEXT_HINTS]`;
 }

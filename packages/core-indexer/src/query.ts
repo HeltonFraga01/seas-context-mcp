@@ -69,6 +69,7 @@ export function buildEntityPathHints(entities: Set<string>, focusTerms: string[]
   if (focusTerms.includes('memory')) hints.push('memory-systems', 'memory', 'agent_memory');
   if (focusTerms.includes('a2a')) hints.push('a2a', 'A2AServer', 'CortexAgentExecutor');
   if (focusTerms.includes('mcp')) hints.push('mcp', 'RickBMcp', 'tenant_mcp_servers');
+  if (focusTerms.includes('tenant_factory')) hints.push('tenant-bootstrap', 'tenant-creation', 'tenant factory', 'TenantManagementService', 'OnboardingAutoTenantService', 'GenesisKernelService');
   if (timeline) hints.push('changelog', 'runbook', 'roadmap', 'plan', 'updated_at', 'release');
   return [...new Set(hints)];
 }
@@ -217,6 +218,18 @@ export function scoreEvidenceWithHints(intent: QueryIntent, item: EvidenceRecord
   }
   if (focusTerms.includes('mcp')) {
     if (normalizedSource.includes('mcp')) boost += 0.7;
+  }
+  if (focusTerms.includes('tenant_factory')) {
+    if (normalizedSource.includes('/specs/')) boost += 2.4;
+    if (normalizedSource.includes('requirements.md') || normalizedSource.includes('design.md') || normalizedSource.includes('tasks.md')) boost += 2.1;
+    if (normalizedSource.includes('tenant-bootstrap')) boost += 3.2;
+    if (normalizedSource.includes('tenant-creation')) boost += 2.8;
+    if (normalizedSource.includes('tenantmanagementservice')) boost += 2.4;
+    if (normalizedSource.includes('onboardingautotenantservice')) boost += 2.2;
+    if (normalizedSource.includes('genesiskernelservice')) boost += 1.1;
+    if (entities.has('spec') && normalizedSource.includes('tenant-bootstrap') && !normalizedSource.includes('/specs/')) boost -= 2.6;
+    if (normalizedSource.includes('/architecture.md') || normalizedSource.includes('agents-architecture')) boost -= 2.8;
+    if (normalizedSource.includes('/_archived/')) boost -= 1.6;
   }
 
   return boost;
