@@ -102,6 +102,8 @@ Example profiles:
 - [`examples/cortexx/contextmcp.lean.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.lean.toml): operational profile for architecture, roadmap and runtime surfaces
 - [`examples/integrations/mcp-servers.local.json`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/mcp-servers.local.json): ready-to-use JSON for this machine
 - [`examples/integrations/mcp-servers.template.json`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/mcp-servers.template.json): generic JSON template for other IDEs/clients
+- [`examples/integrations/codex.config.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/codex.config.toml): canonical Codex TOML example
+- [`examples/integrations/kiro.mcp.json`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/kiro.mcp.json): canonical Kiro JSON example
 
 ## Risk Gate
 

@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "seas-context-mcp": {
+      "command": "/Users/heltonfraga/Documents/Develop/seas-context-mcp/scripts/start-mcp.sh",
+      "args": [],
+      "env": {
+        "SEAS_CONTEXT_CONFIG_PATH": "/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.lean.toml"
+      },
+      "autoApprove": [
+        "project_register",
+        "source_add",
+        "source_sync",
+        "source_status",
+        "index_refresh",
+        "index_refresh_status",
+        "context_query",
+        "evidence_query",
+        "context_map",
+        "context_health",
+        "provider_status",
+        "provider_query"
+      ],
+      "disabled": false,
+      "disabledTools": []
+    }
+  }
+}
