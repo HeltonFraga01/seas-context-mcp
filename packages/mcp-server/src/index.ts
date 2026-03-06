@@ -25,12 +25,16 @@ function getCapability(provider: string) {
     : { name: 'generic', can_query: true, can_write: true, entities: ['project', 'source', 'chunk', 'evidence'] };
 }
 
+function getRequestedConfigPath(rawPath?: string) {
+  return rawPath ?? process.env.SEAS_CONTEXT_CONFIG_PATH ?? 'contextmcp.toml';
+}
+
 function resolveProviderConfig(config: ReturnType<typeof loadConfig>) {
   return config.provider === 'cortexx' ? patchCortexxConfig(config) : config;
 }
 
 function loadResolvedConfig(configPath?: string) {
-  const resolvedPath = resolve(configPath ?? 'contextmcp.toml');
+  const resolvedPath = resolve(getRequestedConfigPath(configPath));
   return {
     configPath: resolvedPath,
     config: resolveProviderConfig(loadConfig(resolvedPath))
@@ -92,7 +96,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     if (name === 'project_register') {
-      const configPath = resolve(args?.config_path ?? 'contextmcp.toml');
+      const configPath = resolve(getRequestedConfigPath(args?.config_path));
       const config = createDefaultConfig(args.project_root, args.provider ?? 'generic');
       saveConfig(configPath, config);
       return { content: [{ type: 'text', text: JSON.stringify({ created: configPath, project_root: config.project_root, provider: config.provider }, null, 2) }] };
