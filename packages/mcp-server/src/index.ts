@@ -19,6 +19,17 @@ import {
 } from '@seas-context/core-indexer';
 import { cortexxCapability, enrichCortexxQuery, patchCortexxConfig } from '@seas-context/provider-cortexx';
 
+type RefreshJobState = {
+  job_id: string;
+  status: 'running' | 'completed' | 'failed';
+  started_at: string;
+  finished_at?: string;
+  error?: string;
+  result?: unknown;
+};
+
+const refreshJobs = new Map<string, RefreshJobState>();
+
 function getCapability(provider: string) {
   return provider === 'cortexx'
     ? cortexxCapability
@@ -43,6 +54,43 @@ function loadResolvedConfig(configPath?: string) {
 
 function addSource(config: ProjectConfig, source: SourceDescriptor) {
   config.sources = [...config.sources, source];
+}
+
+function getRefreshKey(configPath: string, config: ProjectConfig) {
+  return `${config.project_id}:${configPath}`;
+}
+
+function startRefreshJob(configPath: string, config: ProjectConfig) {
+  const key = getRefreshKey(configPath, config);
+  const current = refreshJobs.get(key);
+  if (current?.status === 'running') return current;
+
+  const job: RefreshJobState = {
+    job_id: key,
+    status: 'running',
+    started_at: new Date().toISOString()
+  };
+  refreshJobs.set(key, job);
+
+  void ingestProject(config)
+    .then((result) => {
+      refreshJobs.set(key, {
+        ...job,
+        status: 'completed',
+        finished_at: new Date().toISOString(),
+        result
+      });
+    })
+    .catch((error) => {
+      refreshJobs.set(key, {
+        ...job,
+        status: 'failed',
+        finished_at: new Date().toISOString(),
+        error: (error as Error).message
+      });
+    });
+
+  return job;
 }
 
 async function executeWrite(config: ProjectConfig, request: WriteActionRequest) {
@@ -77,7 +125,8 @@ const toolDefs = [
   { name: 'source_add', description: 'Add a source to contextmcp.toml', inputSchema: { type: 'object', properties: { config_path: { type: 'string' }, source: { type: 'object' } }, required: ['source'] } },
   { name: 'source_sync', description: 'Refresh indexed sources', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
   { name: 'source_status', description: 'List configured sources and index health', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
-  { name: 'index_refresh', description: 'Reindex configured sources', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
+  { name: 'index_refresh', description: 'Reindex configured sources asynchronously', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
+  { name: 'index_refresh_status', description: 'Show asynchronous reindex status', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
   { name: 'context_query', description: 'Query project context', inputSchema: { type: 'object', properties: { query: { type: 'string' }, config_path: { type: 'string' } }, required: ['query'] } },
   { name: 'evidence_query', description: 'Query and return raw evidence', inputSchema: { type: 'object', properties: { query: { type: 'string' }, config_path: { type: 'string' } }, required: ['query'] } },
   { name: 'context_map', description: 'Show source distribution map', inputSchema: { type: 'object', properties: { config_path: { type: 'string' } } } },
@@ -110,8 +159,34 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       return { content: [{ type: 'text', text: JSON.stringify({ updated: configPath, source: args.source }, null, 2) }] };
     }
 
-    if (name === 'source_sync' || name === 'index_refresh') {
+    if (name === 'source_sync') {
       return { content: [{ type: 'text', text: JSON.stringify(await ingestProject(config), null, 2) }] };
+    }
+
+    if (name === 'index_refresh') {
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            accepted: true,
+            mode: 'async',
+            job: startRefreshJob(configPath, config)
+          }, null, 2)
+        }]
+      };
+    }
+
+    if (name === 'index_refresh_status') {
+      const store = new ContextStore(config.project_root);
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify({
+            job: refreshJobs.get(getRefreshKey(configPath, config)) ?? null,
+            health: store.health(config.project_id)
+          }, null, 2)
+        }]
+      };
     }
 
     if (name === 'source_status') {
