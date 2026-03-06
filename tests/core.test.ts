@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { beforeEach, afterEach, describe, expect, it } from 'vitest';
-import { ingestProject, loadConfig, queryContext, evaluateWriteAction } from '../packages/core-indexer/dist/index.js';
+import { ingestProject, loadConfig, queryContext, evaluateWriteAction } from '../packages/core-indexer/src/index.ts';
 
 let root = '';
 let configPath = '';

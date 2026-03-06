@@ -92,6 +92,9 @@ async function ingestGithub(config: ProjectConfig, store: ContextStore, source: 
   for (const issue of remote.issues ?? []) {
     records.push({ path: `github://${source.owner}/${source.repo}/issues/${issue.number}`, content: `${issue.title}\n\n${issue.body ?? ''}`, title: issue.title });
   }
+  for (const pull of remote.pulls ?? []) {
+    records.push({ path: `github://${source.owner}/${source.repo}/pulls/${pull.number}`, content: `${pull.title}\n\n${pull.body ?? ''}`, title: pull.title });
+  }
   for (const release of remote.releases ?? []) {
     records.push({ path: `github://${source.owner}/${source.repo}/releases/${release.tag_name}`, content: `${release.name ?? release.tag_name}\n\n${release.body ?? ''}`, title: release.name ?? release.tag_name });
   }
