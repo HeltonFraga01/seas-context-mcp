@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "seas-context-mcp": {
+      "command": "/ABS/PATH/seas-context-mcp/scripts/start-mcp.sh",
+      "args": [],
+      "env": {
+        "SEAS_CONTEXT_CONFIG_PATH": "/ABS/PATH/seas-context-mcp/examples/cortexx/contextmcp.lean.toml"
+      }
+    }
+  }
+}

@@ -84,6 +84,8 @@ Provider `cortexx` adds:
 Example profiles:
 - [`examples/cortexx/contextmcp.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.toml): broad project ingest
 - [`examples/cortexx/contextmcp.lean.toml`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/cortexx/contextmcp.lean.toml): operational profile for architecture, roadmap and runtime surfaces
+- [`examples/integrations/mcp-servers.local.json`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/mcp-servers.local.json): ready-to-use JSON for this machine
+- [`examples/integrations/mcp-servers.template.json`](/Users/heltonfraga/Documents/Develop/seas-context-mcp/examples/integrations/mcp-servers.template.json): generic JSON template for other IDEs/clients
 
 ## Risk Gate
 
