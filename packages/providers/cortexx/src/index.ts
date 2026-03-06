@@ -30,5 +30,42 @@ export function patchCortexxConfig(config: ProjectConfig): ProjectConfig {
 }
 
 export function enrichCortexxQuery(query: string): string {
-  return `${query}\n\nPrioritize AGENTS.md, .context/docs, .kiro/specs, .kiro/skills, roadmap, runbooks and architecture evidence.`;
+  const normalized = query.toLowerCase();
+  const entities = new Set<string>();
+  const focusTerms = new Set<string>();
+  let timeline = false;
+
+  const entityMatchers: Array<[string, RegExp[]]> = [
+    ['roadmap_item', [/\broadmap\b/, /\bbacklog\b/, /\btarefa\b/, /\btasks?\b/, /\bpenden/]],
+    ['spec', [/\bspec\b/, /\brequirements?\b/, /\bdesign\b/, /\btasks\.md\b/]],
+    ['skill', [/\bskill\b/, /\.kiro\/skills\b/, /\.codex\/skills\b/]],
+    ['plan', [/\bplan\b/, /\bplano\b/, /\.context\/plans\b/]],
+    ['runbook', [/\brunbook\b/, /\boperacional\b/, /\bincident\b/]],
+    ['agent', [/\brick-b\b/, /\brick b\b/, /\bagent\b/, /\bagente\b/, /\bsuperadmin\b/, /\bbuilder\b/]],
+    ['vertical', [/\bvertical\b/, /\brestaurant\b/, /\btickets\b/, /\bsignage\b/, /\bmarketplace\b/]],
+    ['tenant_context', [/\btenant\b/, /\binbox\b/, /\bcrm\b/, /\bcontact\b/, /\bwhatsapp\b/, /\binstagram\b/]]
+  ];
+
+  for (const [entity, patterns] of entityMatchers) {
+    if (patterns.some((pattern) => pattern.test(normalized))) entities.add(entity);
+  }
+
+  if (/\bmudou\b|\bchanged\b|\bhistory\b|\bhistoric\b|\btimeline\b|\bultima\b|\brecente\b|\bquando\b/.test(normalized)) {
+    timeline = true;
+  }
+
+  if (/\barquitet/.test(normalized)) focusTerms.add('architecture');
+  if (/\bruntime\b/.test(normalized)) focusTerms.add('runtime');
+  if (/\bmem[oó]ria\b|\bmemory\b/.test(normalized)) focusTerms.add('memory');
+  if (/\ba2a\b/.test(normalized)) focusTerms.add('a2a');
+  if (/\bmcp\b/.test(normalized)) focusTerms.add('mcp');
+
+  const hints = {
+    provider: 'cortexx',
+    entities: [...entities],
+    timeline,
+    focus_terms: [...focusTerms]
+  };
+
+  return `${query}\n\nPrioritize AGENTS.md, .context/docs, .kiro/specs, .kiro/skills, roadmap, runbooks and architecture evidence.\n[SEAS_CONTEXT_HINTS]${JSON.stringify(hints)}[/SEAS_CONTEXT_HINTS]`;
 }
