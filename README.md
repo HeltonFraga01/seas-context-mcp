@@ -43,6 +43,13 @@ context source-sync --config contextmcp.toml
 context doctor --config contextmcp.toml
 ```
 
+Optional environment:
+
+```bash
+export OPENAI_API_KEY=...
+export GITHUB_TOKEN=...
+```
+
 ## MCP Tools
 
 - `project_register`
@@ -50,6 +57,7 @@ context doctor --config contextmcp.toml
 - `source_sync`
 - `source_status`
 - `index_refresh`
+- `index_refresh_status`
 - `context_query`
 - `evidence_query`
 - `context_map`
@@ -73,6 +81,14 @@ The local console exposes:
 - provider status
 - ad-hoc query
 - one-click reindex
+
+## Async Refresh
+
+`index_refresh` is asynchronous.
+
+- use `index_refresh` to enqueue a reindex
+- use `index_refresh_status` to observe job state and refreshed health
+- use `context_health` as the canonical health/freshness snapshot after completion
 
 ## Córtexx Provider
 
@@ -105,6 +121,25 @@ Every write records:
 - target
 - payload summary
 - timestamp
+
+Typical remote policies:
+- `github_issue_upsert`: `low` or `medium`
+- `doc_publish`: usually `medium`
+- anything outside issues/docs: out of scope in V1
+
+## Remote Sources
+
+GitHub ingestion currently covers:
+- repository metadata
+- README
+- open issues
+- open pull requests
+- releases
+
+Web ingestion:
+- only runs for allowlisted domains in `web_allowlist.domains`
+- fails closed for non-allowlisted hosts
+- uses bounded request timeout in the connector layer
 
 ## Notes
 
