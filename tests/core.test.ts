@@ -44,4 +44,13 @@ describe('core indexer', () => {
     });
     expect(decision.allowed).toBe(false);
   });
+
+  it('prioritizes canonical runtime docs for operational queries', async () => {
+    writeFileSync(join(root, '.context', 'docs', 'cortex-100-wave1-rick-b-runtime-contract-2026-03-05.md'), '# Rick-B Runtime Contract\nCanonical runtime contract');
+    writeFileSync(join(root, '.context', 'docs', 'memory-systems.md'), '# Memory Systems\nTripartite memory');
+    const config = loadConfig(configPath);
+    await ingestProject(config);
+    const result = await queryContext(config, 'Rick-B runtime control plane e memória');
+    expect(result.evidence[0]?.path).toContain('rick-b-runtime-contract');
+  });
 });

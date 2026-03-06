@@ -18,7 +18,8 @@ export function buildCortexxSources(projectRoot: string): SourceDescriptor[] {
 
 export function patchCortexxConfig(config: ProjectConfig): ProjectConfig {
   const sources = [...config.sources];
-  if (!sources.find((source) => source.name === 'context-docs')) {
+  const hasProjectRootSource = sources.some((source) => source.type === 'local' && resolve(config.project_root, source.path ?? '.') === config.project_root);
+  if (!hasProjectRootSource && !sources.find((source) => source.name === 'context-docs')) {
     sources.push(...buildCortexxSources(config.project_root).filter((candidate) => !sources.find((source) => source.name === candidate.name)));
   }
   return {
